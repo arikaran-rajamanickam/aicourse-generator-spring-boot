@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <!-- ===================== COURSES ===================== -->
+    <changeSet id="courses-table" author="ari">
+        <createTable tableName="courses">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_courses"
+                             nullable="false"/>
+            </column>
+
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="description" type="TEXT"/>
+
+            <column name="creator" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"
+                    defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"
+                    defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- ===================== MODULES ===================== -->
+    <changeSet id="modules-table" author="ari">
+        <createTable tableName="modules">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_modules"
+                             nullable="false"/>
+            </column>
+
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"
+                    defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"
+                    defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="modules"
+                baseColumnNames="course_id"
+                constraintName="fk_modules_course"
+                referencedTableName="courses"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- ===================== LESSONS ===================== -->
+    <changeSet id="lessons-table" author="ari">
+        <createTable tableName="lessons">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_lessons"
+                             nullable="false"/>
+            </column>
+
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="content" type="JSONB">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_enriched" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="module_id" type="BIGINT"/>
+
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"
+                    defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"
+                    defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="lessons"
+                baseColumnNames="module_id"
+                constraintName="fk_lessons_module"
+                referencedTableName="modules"
+                referencedColumnNames="id"
+                onDelete="SET NULL"/>
+    </changeSet>
+
+    <!-- ===================== COURSE TAGS ===================== -->
+    <changeSet id="course-tags-table" author="ari">
+        <createTable tableName="course_tags">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_course_tags"
+                             nullable="false"/>
+            </column>
+
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="tag" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="course_tags"
+                baseColumnNames="course_id"
+                constraintName="fk_course_tags_course"
+                referencedTableName="courses"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <createIndex indexName="idx_course_tags_course_tag"
+                     tableName="course_tags">
+            <column name="course_id"/>
+            <column name="tag"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- ===================== USERS ===================== -->
+    <changeSet id="users-table" author="ari">
+        <createTable tableName="users">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_users"
+                             nullable="false"/>
+            </column>
+
+            <column name="username" type="VARCHAR(100)">
+                <constraints nullable="false"
+                             unique="true"
+                             uniqueConstraintName="uk_users_username"/>
+            </column>
+
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="roles" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"
+                    defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"
+                    defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="users-display-name" author="ari">
+        <addColumn tableName="users">
+            <column name="display_name" type="VARCHAR(255)"/>
+        </addColumn>
+        <update tableName="users">
+            <column name="display_name" valueComputed="username"/>
+        </update>
+    </changeSet>
+
+    <changeSet id="increase-title-lengths-v2" author="ari">
+        <validCheckSum>ANY</validCheckSum>
+        <modifyDataType tableName="courses" columnName="title" newDataType="VARCHAR(1000)"/>
+        <modifyDataType tableName="modules" columnName="title" newDataType="VARCHAR(1000)"/>
+        <modifyDataType tableName="lessons" columnName="title" newDataType="VARCHAR(1000)"/>
+        <modifyDataType tableName="users" columnName="password" newDataType="VARCHAR(512)"/>
+        <modifyDataType tableName="users" columnName="roles" newDataType="VARCHAR(512)"/>
+    </changeSet>
+    <changeSet id="increase-course-creator-length" author="ari">
+        <modifyDataType
+                tableName="courses"
+                columnName="creator"
+                newDataType="TEXT"/>
+    </changeSet>
+    <changeSet id="courses-text-columns-v3" author="ari">
+        <modifyDataType tableName="courses" columnName="title" newDataType="TEXT"/>
+        <modifyDataType tableName="courses" columnName="creator" newDataType="BIGINT"/>
+        <modifyDataType tableName="courses" columnName="description" newDataType="TEXT"/>
+    </changeSet>
+
+    <changeSet id="courses-add-is-active-field" author="ari">
+        <addColumn tableName="courses">
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <include file="db/changelog/db.changelog-leaderboard.xml"/>
+    <include file="db/changelog/db.changelog-project.xml"/>
+    <include file="db/changelog/db.changelog-sharing.xml"/>
+    <include file="db/changelog/db.changelog-streak-fix.xml"/>
+    <include file="db/changelog/db.changelog-llm-management.xml"/>
+    <include file="db/changelog/db.changelog-mcp-audit.xml"/>
+    <include file="db/changelog/db.changelog-mcp-audit-v2.xml"/>
+    <include file="db/changelog/db.changelog-dynamic-course-builder.xml"/>
+    <include file="db/changelog/db.changelog-rich-media-studio.xml"/>
+    <include file="db/changelog/db.changelog-project-prompts.xml"/>
+    <include file="db/changelog/db.changelog-marketing-content.xml"/>
+    <include file="db/changelog/db.changelog-course-enrichment.xml"/>
+    <include file="db/changelog/db.changelog-sublessons.xml"/>
+    <include file="db/changelog/db.changelog-prerequisite-explanations.xml"/>
+
+    <!-- Add creation counters columns after userstats table is created -->
+    <changeSet id="userstats-add-creation-counters" author="ari">
+
+        <addColumn tableName="userstats">
+            <column name="total_courses_created" type="INT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="userstats">
+            <column name="total_projects_created" type="INT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+    </changeSet>
+</databaseChangeLog>

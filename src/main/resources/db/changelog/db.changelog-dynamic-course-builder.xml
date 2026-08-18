@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="dynamic-course-builder-columns" author="antigravity">
+        <!-- Keep prior checksum compatibility while replacing DB-version-specific SQL with safe guarded changeSets below. -->
+        <validCheckSum>ANY</validCheckSum>
+        <sql>SELECT 1</sql>
+    </changeSet>
+
+    <changeSet id="dynamic-course-builder-courses-category" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="courses" columnName="category"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="courses">
+            <column name="category" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="dynamic-course-builder-courses-difficulty" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="courses" columnName="difficulty"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="courses">
+            <column name="difficulty" type="VARCHAR(50)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="dynamic-course-builder-courses-estimated-duration-value" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="courses" columnName="estimated_duration_value"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="courses">
+            <column name="estimated_duration_value" type="INT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="dynamic-course-builder-courses-estimated-duration-unit" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="courses" columnName="estimated_duration_unit"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="courses">
+            <column name="estimated_duration_unit" type="VARCHAR(50)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="dynamic-course-builder-courses-thumbnail-url" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="courses" columnName="thumbnail_url"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="courses">
+            <column name="thumbnail_url" type="VARCHAR(1500)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="dynamic-course-builder-courses-final-exam" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="courses" columnName="final_exam"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="courses">
+            <column name="final_exam" type="JSONB"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="dynamic-course-builder-courses-visibility" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="courses" columnName="visibility"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="courses">
+            <column name="visibility" type="VARCHAR(50)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="dynamic-course-builder-courses-enrollment-type" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="courses" columnName="enrollment_type"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="courses">
+            <column name="enrollment_type" type="VARCHAR(50)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="dynamic-course-builder-courses-tags-json" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="courses" columnName="tags_json"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="courses">
+            <column name="tags_json" type="JSONB"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="dynamic-course-builder-modules-description" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="modules" columnName="description"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="modules">
+            <column name="description" type="TEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="dynamic-course-builder-modules-learning-objectives" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="modules" columnName="learning_objectives"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="modules">
+            <column name="learning_objectives" type="JSONB"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="dynamic-course-builder-modules-assessment" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="modules" columnName="assessment"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="modules">
+            <column name="assessment" type="JSONB"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="dynamic-course-builder-modules-sort-order" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="modules" columnName="sort_order"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="modules">
+            <column name="sort_order" type="INT" defaultValueNumeric="0"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="dynamic-course-builder-lessons-sort-order" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="lessons" columnName="sort_order"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="lessons">
+            <column name="sort_order" type="INT" defaultValueNumeric="0"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

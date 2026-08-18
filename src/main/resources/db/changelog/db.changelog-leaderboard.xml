@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="leaderboard-log" author="ari">
+        <createTable tableName="leaderboard">
+
+            <column name="userId" type="BIGINT">
+                <constraints nullable="false"
+                             unique="true"
+                             uniqueConstraintName="uk_leaderboard_userid"/>
+            </column>
+
+            <column name="rank" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="score" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="roles" type="VARCHAR(255)"/>
+
+        </createTable>
+    </changeSet>
+
+
+    <changeSet id="userstats-table-v2" author="ari">
+
+        <createTable tableName="userstats">
+
+            <column name="userstate_id" type="BIGINT">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_userstats"
+                             nullable="false"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"
+                             unique="true"
+                             uniqueConstraintName="uk_userstats_userid"/>
+            </column>
+
+            <column name="total_points" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="weekly_points" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="courses_completed" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lessons_completed" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="current_streak" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+</databaseChangeLog>

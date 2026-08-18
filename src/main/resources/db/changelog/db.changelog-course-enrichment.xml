@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="courses-enrichment-columns" author="ari">
+        <addColumn tableName="courses">
+            <column name="overview" type="JSONB"/>
+            <column name="capstone_project" type="JSONB"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="modules-enrichment-columns" author="ari">
+        <addColumn tableName="modules">
+            <column name="module_level" type="VARCHAR(255)"/>
+            <column name="estimated_minutes" type="INT"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,10 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Contribution Guidelines
+    url: https://github.com/arikaran-rajamanickam/aicourse-generator-spring-boot/blob/main/CONTRIBUTING.md
+    about: Please read our contribution guidelines before creating an issue.
+
+  - name: Discussions
+    url: https://github.com/arikaran-rajamanickam/aicourse-generator-spring-boot/discussions
+    about: Ask questions and discuss ideas with the community.

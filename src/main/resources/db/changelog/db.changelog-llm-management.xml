@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="ai-llm-providers-v1" author="copilot">
+        <createTable tableName="ai_llm_providers">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="pk_ai_llm_providers" nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(80)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uk_ai_llm_providers_code"/>
+            </column>
+            <column name="provider_type" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="display_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="model_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="base_url" type="TEXT"/>
+            <column name="key_cooldown_hours" type="INT" defaultValueNumeric="24">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enabled" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="ai-llm-api-keys-v1" author="copilot">
+        <createTable tableName="ai_llm_api_keys">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="pk_ai_llm_api_keys" nullable="false"/>
+            </column>
+            <column name="provider_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="api_key" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enabled" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="ai_llm_api_keys"
+                baseColumnNames="provider_id"
+                constraintName="fk_ai_llm_api_keys_provider"
+                referencedTableName="ai_llm_providers"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="ai-llm-routes-v1" author="copilot">
+        <createTable tableName="ai_llm_routes">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="pk_ai_llm_routes" nullable="false"/>
+            </column>
+            <column name="workload" type="VARCHAR(40)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uk_ai_llm_routes_workload"/>
+            </column>
+            <column name="provider_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="ai_llm_routes"
+                baseColumnNames="provider_id"
+                constraintName="fk_ai_llm_routes_provider"
+                referencedTableName="ai_llm_providers"
+                referencedColumnNames="id"
+                onDelete="RESTRICT"/>
+    </changeSet>
+
+</databaseChangeLog>
+

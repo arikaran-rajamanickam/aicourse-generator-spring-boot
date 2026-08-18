@@ -1,0 +1,9 @@
+.git
+.idea
+.mvn
+target/
+node_modules/
+*.iml
+.DS_Store
+.env
+ui/

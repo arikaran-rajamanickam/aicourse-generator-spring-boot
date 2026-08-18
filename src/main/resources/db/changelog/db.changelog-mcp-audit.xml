@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="mcp-audit-logs-v1" author="copilot">
+        <createTable tableName="mcp_audit_logs">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="pk_mcp_audit_logs" nullable="false"/>
+            </column>
+            <column name="request_id" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tool" type="VARCHAR(120)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT"/>
+            <column name="user_role" type="VARCHAR(40)"/>
+            <column name="input_size" type="INT"/>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="latency_ms" type="BIGINT"/>
+            <column name="error_message" type="TEXT"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="mcp_audit_logs" indexName="idx_mcp_audit_logs_created_at">
+            <column name="created_at"/>
+        </createIndex>
+
+        <createIndex tableName="mcp_audit_logs" indexName="idx_mcp_audit_logs_tool_created_at">
+            <column name="tool"/>
+            <column name="created_at"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
+

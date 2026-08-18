@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <!-- ===================== PROJECTS TABLE ===================== -->
+    <!--
+        A project is a named container that groups multiple courses together.
+        creator column stores username (same pattern as courses.creator for now).
+        project_id on courses is nullable — existing courses are unaffected.
+    -->
+    <changeSet id="projects-table" author="ari">
+        <createTable tableName="projects">
+
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_projects"
+                             nullable="false"/>
+            </column>
+
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="description" type="TEXT"/>
+
+            <!-- Stores username string — same pattern as courses.creator -->
+            <column name="creator" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"
+                    defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"
+                    defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <!-- ===================== ADD project_id FK TO COURSES ===================== -->
+    <!--
+        Nullable FK — existing courses get NULL here (no project assigned).
+        ON DELETE SET NULL — if a project is deleted with deleteCourses=false,
+        courses stay but project_id becomes NULL (handled in service layer too).
+        ON DELETE CASCADE is NOT used here; the service handles both delete modes
+        explicitly so the DB just does SET NULL as a safety fallback.
+    -->
+    <changeSet id="courses-add-project-fk" author="ari">
+
+        <addColumn tableName="courses">
+            <column name="project_id" type="BIGINT">
+                <!-- nullable — existing courses are unaffected -->
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint
+                baseTableName="courses"
+                baseColumnNames="project_id"
+                constraintName="fk_courses_project"
+                referencedTableName="projects"
+                referencedColumnNames="id"
+                onDelete="SET NULL"/>
+
+        <!-- Index for fast lookup: "give me all courses in project X" -->
+        <createIndex indexName="idx_courses_project_id"
+                     tableName="courses">
+            <column name="project_id"/>
+        </createIndex>
+
+    </changeSet>
+
+</databaseChangeLog>

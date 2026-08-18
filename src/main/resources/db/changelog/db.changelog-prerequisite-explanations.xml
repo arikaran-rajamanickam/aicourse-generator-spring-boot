@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="prerequisite-explanations-table" author="ari">
+        <createTable tableName="prerequisite_explanations">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_prereq_explanations" nullable="false"/>
+            </column>
+
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="prerequisite" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="depth" type="VARCHAR(20)" defaultValue="standard">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- Full AI coach response stored as JSONB -->
+            <column name="response_data" type="JSONB">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Unique index: one explanation per prerequisite+course+depth -->
+        <createIndex indexName="idx_prereq_expl_lookup"
+                     tableName="prerequisite_explanations"
+                     unique="true">
+            <column name="course_id"/>
+            <column name="prerequisite"/>
+            <column name="depth"/>
+        </createIndex>
+
+        <addForeignKeyConstraint
+                baseTableName="prerequisite_explanations"
+                baseColumnNames="course_id"
+                constraintName="fk_prereq_expl_course"
+                referencedTableName="courses"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>
+

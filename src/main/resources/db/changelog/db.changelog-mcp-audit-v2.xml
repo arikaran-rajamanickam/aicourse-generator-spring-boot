@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="mcp-audit-logs-v2-response-body" author="copilot">
+        <addColumn tableName="mcp_audit_logs">
+            <column name="response_body" type="TEXT"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>
