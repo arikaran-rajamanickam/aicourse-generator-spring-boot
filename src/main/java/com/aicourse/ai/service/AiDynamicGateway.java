@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.ProxySelector;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -50,7 +51,8 @@ public class AiDynamicGateway {
         this.apiKeyRepo = apiKeyRepo;
         this.objectMapper = objectMapper;
         this.httpClient = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(20))
+                .connectTimeout(Duration.ofSeconds(30))
+                .proxy(ProxySelector.getDefault())
                 .build();
     }
 
@@ -269,7 +271,10 @@ public class AiDynamicGateway {
             payload.put("stream", true);
 
             String body = objectMapper.writeValueAsString(payload);
-
+            HttpClient httpClient1 = HttpClient.newBuilder()
+                    .connectTimeout(Duration.ofSeconds(30))
+                    .proxy(ProxySelector.getDefault())
+                    .build();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(target))
                     .timeout(Duration.ofSeconds(120))
@@ -278,7 +283,7 @@ public class AiDynamicGateway {
                     .POST(HttpRequest.BodyPublishers.ofString(body))
                     .build();
 
-            HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
+            HttpResponse<InputStream> response = httpClient1.send(request, HttpResponse.BodyHandlers.ofInputStream());
             if (response.statusCode() < 200 || response.statusCode() >= 300) {
                 String errorBody = new String(response.body().readAllBytes(), StandardCharsets.UTF_8);
                 throw new RuntimeException("Groq API error " + response.statusCode() + ": " + errorBody);

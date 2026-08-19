@@ -84,6 +84,15 @@ import { getAutoGenStatus, toggleAutoGen, configureAutoGen, getAutoGenLogs, type
 
 const WORKLOADS: WorkloadType[] = ["COURSE_GENERATION", "LESSON_GENERATION", "AI_COACH"];
 
+const GROQ_MODEL_OPTIONS = [
+  "openai/gpt-oss-120b",
+  "openai/gpt-oss-20b",
+  "allam-2-7b",
+  "groq/compound",
+  "groq/compound-mini",
+  "qwen/qwen3.6-27b",
+];
+
 function JsonHighlighter({ json }: { json: string | null | undefined }) {
   if (!json) return <span className="italic text-muted-foreground/50">No response body captured for this record.</span>;
   
@@ -770,13 +779,31 @@ export default function LlmAdmin() {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="modelName" className="text-[12px] font-bold text-foreground/70 uppercase tracking-tight">Intelligence Engine ID</Label>
-                        <Input 
-                          id="modelName" 
-                          placeholder="e.g. gemini-1.5-pro-latest" 
-                          className="bg-background h-10 font-mono text-[12px] border-border/60 shadow-sm"
-                          value={form.modelName} 
-                          onChange={e => setForm(f => ({ ...f, modelName: e.target.value }))}
-                        />
+                        {form.providerType === "GROQ" ? (
+                          <Select
+                            value={form.modelName}
+                            onValueChange={v => setForm(f => ({ ...f, modelName: v }))}
+                          >
+                            <SelectTrigger id="modelName" className="bg-background h-10 font-mono text-[12px] border-border/60 shadow-sm">
+                              <SelectValue placeholder="Select a Groq model" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {GROQ_MODEL_OPTIONS.map(model => (
+                                <SelectItem key={model} value={model} className="font-mono text-[12px]">
+                                  {model}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <Input
+                            id="modelName"
+                            placeholder="e.g. gemini-1.5-pro-latest"
+                            className="bg-background h-10 font-mono text-[12px] border-border/60 shadow-sm"
+                            value={form.modelName}
+                            onChange={e => setForm(f => ({ ...f, modelName: e.target.value }))}
+                          />
+                        )}
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="baseUrl" className="text-[12px] font-bold text-foreground/70 uppercase">Gateway Override (URL)</Label>

@@ -27,8 +27,13 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_LIQUIBASE_CHANGE_LOG: classpath:/db/changelog/db.changelog-master.xml
       SPRING_AI_GOOGLE_GENAI_API_KEY: dummy
+      JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     ports:
       - "8080:8080"
+      - "127.0.0.1:5005:5005"
 
   frontend:
     build:
